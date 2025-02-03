@@ -39,7 +39,7 @@ public class Credentials {
     }
 
     public static Credentials fromResource() {
-        return fromResource(DEFAULT_CREDENTIALS_FILE_NAME);
+        return fromResource("/" + DEFAULT_CREDENTIALS_FILE_NAME);
     }
 
     public static Credentials fromResource(String resourcePath) {
