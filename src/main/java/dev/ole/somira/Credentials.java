@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -59,5 +61,28 @@ public class Credentials {
         } catch (IOException e) {
             throw new RuntimeException("Couldn't read resource from path \"" + resourcePath + "\": ", e);
         }
+    }
+
+    public static Credentials fromFile() {
+        return fromFile(DEFAULT_CREDENTIALS_FILE_NAME);
+    }
+
+    public static Credentials fromFile(String filePath) {
+        if (filePath == null) {
+            throw new RuntimeException("Couldn't read file from null path!");
+        }
+        File diskFile = new File(filePath);
+        if (!diskFile.exists()) {
+            return null;
+        }
+        try (InputStream inputStream = new FileInputStream(diskFile)) {
+            return fromStreamProperties(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't read file from path \"" + filePath + "\": ", e);
+        }
+    }
+
+    public static Credentials fromSystemProperties() {
+        return new Credentials(System.getProperty(convertToEnvVarKey(CONNECT_KEY)), System.getProperty(convertToEnvVarKey(DATABASE_KEY)));
     }
 }
