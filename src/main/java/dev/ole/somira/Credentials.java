@@ -83,6 +83,11 @@ public class Credentials {
     }
 
     public static Credentials fromSystemProperties() {
-        return new Credentials(System.getProperty(convertToEnvVarKey(CONNECT_KEY)), System.getProperty(convertToEnvVarKey(DATABASE_KEY)));
+        return fromSystemProperties(CONNECT_KEY, DATABASE_KEY);
     }
+
+    public static Credentials fromSystemProperties(String propertyConnectKey, String propertyDatabaseKey) {
+        return new Credentials(System.getProperty(propertyConnectKey), System.getProperty(propertyDatabaseKey));
+    }
+
 }
