@@ -1,19 +1,57 @@
 plugins {
-    id 'java'
+    id('java-library')
+    id('com.github.johnrengelman.shadow') version('8.1.1')
 }
 
-group = 'dev.ole.somira'
-version = '1.0-SNAPSHOT'
+group('dev.ole.somira')
+version('0.0.1')
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // The driver itself
+    api("org.mongodb:mongodb-driver-sync:$mongoDriverVersion")
+    testImplementation("org.mongodb:mongodb-driver-sync:$mongoDriverVersion")
+
+    // Eliminate boilerplate code
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    testImplementation("org.projectlombok:lombok:$lombokVersion")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
+    // Test-Suite runtime
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+
+    // SLF4j logger for test-suite
+    testImplementation("org.slf4j:slf4j-jdk14:$slf4jVersion")
 }
 
 test {
     useJUnitPlatform()
 }
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    options.fork = true
+    options.encoding = 'UTF-8'
+    options.release.set(17)
+}
+
+tasks.register('sourcesJar', Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier.set('sources')
+}
+tasks.register('javadocJar', Jar) {
+    from javadoc.destinationDir
+    archiveClassifier.set('javadoc')
+}
+
+artifacts {
+    archives(shadowJar)
+    archives(sourcesJar)
+    archives(javadocJar)
+}
+
