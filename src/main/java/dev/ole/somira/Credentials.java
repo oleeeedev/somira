@@ -90,4 +90,15 @@ public class Credentials {
         return new Credentials(System.getProperty(propertyConnectKey), System.getProperty(propertyDatabaseKey));
     }
 
+    public static Credentials fromSystemEnvVars() {
+        return fromSystemEnvVars(convertToEnvVarKey(CONNECT_KEY), convertToEnvVarKey(DATABASE_KEY));
+    }
+
+    public static Credentials fromSystemEnvVars(String envVarConnectKey, String envVarDatabaseKey) {
+        return new Credentials(System.getenv(envVarConnectKey), System.getenv(envVarDatabaseKey));
+    }
+
+    public static Credentials of(String connectString, String database) {
+        return new Credentials(connectString, database);
+    }
 }
